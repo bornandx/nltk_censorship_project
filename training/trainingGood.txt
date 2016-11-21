@@ -6,3 +6,5 @@ https://github.com/qjone003/greg-the-ghoul
 https://github.com/bornandx/nltk_censorship_project
 https://docs.python.org/2/c-api/
 https://moodle.plattsburgh.edu
+https://mycampus.plattsburgh.edu
+https://pearsonhighered.com
