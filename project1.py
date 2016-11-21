@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import nltk
+import urllib
 
 import os
 os.chdir(os.getcwd())
@@ -14,8 +15,10 @@ def getPage(string):
     page can't be retrieved for some reason then raise an IndexError.
     (because internet[thatpage] doesn't exist or couldn't be reached <.< )
     """
-    html = ""
-    #TODO
+    try:
+        html = urllib.request.urlopen(string).read()
+    except:
+        raise IndexError
     return html
 
 def getTrainingData(afile):
@@ -32,7 +35,10 @@ def getTrainingData(afile):
             line = line.rstrip() #strip newlines
             if not line:
                 continue
-            data.append(getPage(line))
+            try:
+                data.append(getPage(line))
+            except:
+                continue
     return data
 
 def censMain(BadTrainingFile, GoodTrainingFile):
@@ -41,4 +47,6 @@ def censMain(BadTrainingFile, GoodTrainingFile):
     """
     goodData = getTrainingData(GoodTrainingFile)
     badData = getTrainingData(BadTrainingFile)
-    #TODO
+    print(goodData)
+
+censMain("training/trainingBad.txt", "training/trainingGood.txt")
