@@ -6,5 +6,6 @@ https://github.com/qjone003/greg-the-ghoul
 https://github.com/bornandx/nltk_censorship_project
 https://docs.python.org/2/c-api/
 https://moodle.plattsburgh.edu
-https://mycampus.plattsburgh.edu
 https://pearsonhighered.com
+http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html
+http://scikit-learn.org/stable/auto_examples/text/document_classification_20newsgroups.html#sphx-glr-auto-examples-text-document-classification-20newsgroups-py
