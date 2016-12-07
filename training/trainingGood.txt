@@ -9,3 +9,14 @@ https://moodle.plattsburgh.edu
 https://pearsonhighered.com
 http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html
 http://scikit-learn.org/stable/auto_examples/text/document_classification_20newsgroups.html#sphx-glr-auto-examples-text-document-classification-20newsgroups-py
+https://Togetherville.com 
+https://Yoursphere.com 
+https://ePals.com 
+https://ClubPenguin.com
+https://Kids.NationalGeographic.com 
+https://Askkids.com 
+https://PBSkids.org 
+https://Nickjr.com 
+https://Girlscouts.org/forgirls 
+https://Disney.go.com
+https://Zoeysroom.com
