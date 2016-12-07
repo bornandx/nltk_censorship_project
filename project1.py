@@ -3,6 +3,10 @@
 import nltk
 import urllib.request
 import re
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from pandas import DataFrame
 
 import os
 os.chdir(os.getcwd())
@@ -27,10 +31,19 @@ def getPage(string):
 
     try:
         request = urllib.request.Request(string, None, headers)
-        html = urllib.request.urlopen(request).read()
+        html = urllib.request.urlopen(request, timeout=5).read()
     except:
         raise IndexError
     return str(html)
+
+def getData(string):
+    """
+    Takes a string rep of a url and stores the html in a .txt file that is
+    used to make the dataset using sklearn.datasets.load_files.
+    """
+    with open("tempData/temp/current.txt", 'w') as tempFile:
+        tempFile.write(getPage(string))
+    return sklearn.datasets.load_files("tempData")
 
 def getTrainingData(afile):
     """
@@ -48,8 +61,8 @@ def getTrainingData(afile):
         with open("training/"+afile, 'r') as trainFile:
             for line in trainFile:
                 line = line.rstrip() #strip newlines
-                lineNoSlash = re.sub(r'http://','',line)
-                lineNoSlash = re.sub(r'https://','',line)
+                lineNoSlash = re.sub(r'https','',line)
+                lineNoSlash = re.sub(r'http','',lineNoSlash)
                 lineNoSlash = re.sub(r'www.','',lineNoSlash)
                 lineNoSlash = re.sub(r'[/<>:"\|?*]','', lineNoSlash)
                 print(lineNoSlash)
@@ -62,6 +75,53 @@ def getTrainingData(afile):
                     print("Error for "+line)
                     continue
 
+def read_files(path):
+    for root, dir_names, file_names in os.walk(path):
+        for path in dir_names:
+            read_files(os.path.join(root, path))
+        for file_name in file_names:
+            file_path = os.path.join(root, file_name)
+            if os.path.isfile(file_path):
+                past_header, lines = False, []
+                f = open(file_path)
+                for line in f:
+                    if past_header:
+                        lines.append(line)
+                    elif line == NEWLINE:
+                        past_header = True
+                    f.close()
+                    content = NEWLINE.join(lines)
+                    yield file_path, content
+
+def build_data_frame(path, classification):
+    rows = []
+    index = []
+    for file_name, text in read_files(path):
+        rows.append({'text':text, 'class':classification}
+        index.append(file_name)
+
+    data_frame = DataFrame(rows, index=index)
+    return data_frame
+
+SOURCES = [
+    ('data/trainingGood', 'good'),
+    ('data/trainingBad', 'bad')
+]
+
+data = DataFrame({'text': [], 'class':[]})
+for path, classification in SOURCES:
+    data = data.append(build_data_frame(path, classification))
+
+data = data.reindex(numpy.random.permutation(data.index))
+
+from sklearn.feature_extraction.text import CountVectorizer
+count_vectorizer = CountVectorizer()
+counts = count_vectorizer.fit_transform(data['text'].values)
+
+classifier = MultinomialNB()
+targets = data['class'].values
+classifier.fit(counts, targets)
+
 def censMain(BadTrainingFile, GoodTrainingFile):
     """
     Top level logic for running the program.
@@ -69,10 +129,10 @@ def censMain(BadTrainingFile, GoodTrainingFile):
     getTrainingData(GoodTrainingFile)
     getTrainingData(BadTrainingFile)
     
-    dataset = sklearn.datasets.load_files("data/")
-    for something in dataset:
-        print(something, type(dataset[something]))
-    for name in dataset["target_names"]:
-        print("NAME:",name)
+    trainingset = sklearn.datasets.load_files("data/")
+    #TODO Build data_frame
+    data = DataFrame({'text': [], 'class': []})
+    print(trainingset.filenames)
+    
 
 censMain("trainingBad.txt", "trainingGood.txt")
