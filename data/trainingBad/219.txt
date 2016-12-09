@@ -1,0 +1,1 @@
+b'\r\n\r\n \r\n\r\n\r\n var url = `` /index '' ; \r\n self.location = url ; \r\n\r\n\r\n\r\n\r\n ' 

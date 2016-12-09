@@ -55,6 +55,8 @@ def setTrainingData(filePath):
             if not line:
                 continue
             try:
+                if(line[:4] != "http"):
+                    line = "http://"+line
                 html = getPage(line)
                 with open("data/"+filePath.rsplit("/", 1)[-1].rsplit(".", 1)[0]+"/" + str(i) + ".txt", 'w') as htmlFile:
                     for htmlLine in html:
