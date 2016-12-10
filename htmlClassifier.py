@@ -54,7 +54,10 @@ def Category_whole_text_features(tokenized_text):
     isVulgar = False
     hasGit = False
     hasMeme = False
+    hasDownload = False
     for word in tokenized_text:
+        if(re.search(r'[dD][oO][wW][nN][lL][oO][aA][dD]', word) != None):
+            hasDownload = True
         if(re.search(r'([pP][oO][rR][nN])|([sS][eE][xX])',word) != None):
             isPron = True
         if(re.search(r'[xX][xX][xX]', word) != None):
@@ -63,11 +66,11 @@ def Category_whole_text_features(tokenized_text):
             hasTrump = True
         if(re.search(r'[gG][iI][tT]', word) != None):
             hasGit = True
-        if(re.search(r'[mM][eE][mM][eE]', word) != None):
+        if(re.search(r'([mM][eE][mM][eE])|([lL][oOeE][lL])|([kK][eE][kK])|([wW][tT][fF])|([kK][yY][sS])|([dD][oO][gG][eE])|([dD][oO][lL][aA][nN])|([pP][eE][pP][eE])|([wW][aA][iI][fF][uU])|([dD][aA][nN][kK])|([yY][oO][lL][oO])|([cC][aA][nN][cC][eE][rR])', word) != None):
             hasMeme = True
         if(re.search(r'([fF][uU][cC][kK])|([aA][sS][sS])|([dD][iI1!][cC][kK])|([bB8][iI1!][tT][cC][hH])|([cC][uU][nN][tT])|([pP][uU][sS][sS][yY])|([nN][iI1!][gG][gG])|([cC][oO0][cC][kK])|([sS][hH][iI1!][tT])|([bB8][aA][sS][tT][aA][rR][dD])|([wW][hH][oO0][rR][eE3])|([fF][aA][gG])', word) != None):
             isVulgar = True
-    return {'size':size, 'pron':isPron, 'xxxPresent':hasXXX, 'Trump':hasTrump, 'Vulgar':isVulgar, 'Git':hasGit, 'Meme':hasMeme}
+    return {'size':size, 'pron':isPron, 'xxxPresent':hasXXX, 'Trump':hasTrump, 'Vulgar':isVulgar, 'Git':hasGit, 'Meme':hasMeme, 'dl':hasDownload}
 
 def Set_sizes(corpus):
     sizes = []
