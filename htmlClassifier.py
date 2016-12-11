@@ -24,11 +24,9 @@ Flags:
         If set the classifier will be retrained using the parsed data in
         data/<categories>/ folders.
     TEST:
-        If set the classifier will use some of the data in data/<categories>/
-        folders as a test set and output the classifier's accuracy.
-        Recommended to only use with retrain for most accurate results.
-        Not recommended to use with retrain for best trained classifier
-        unless you run the program again with only retrain flag set.
+        Setting just the test flag will not work.
+        As it stands the test data can't be properly generated if
+        loading the classifier.
     RETRAIN+TEST:
         If both flags are set then the classifier will not be trained with
         all of the data but rather a random selection of 75% of it and tested
@@ -44,8 +42,8 @@ if(__name__ == "__main__"):
     if(argLen > 1):
         if("RETRAIN" in argv):
             RETRAIN_CLASSIFIER = True
-        if("TEST" in argv):
-            TESTING = True
+            if("TEST" in argv):
+                TESTING = True
 
 classifier = None
 
