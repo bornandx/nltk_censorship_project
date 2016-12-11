@@ -7,9 +7,8 @@ import statistics
 import re
 import pickle
 
-TESTING = False
-UPDATE_CORPUS = False
 RETRAIN_CLASSIFIER = False
+TESTING = False
 """
 Set TESTING to test 
 Set UPDATE_CORPUS if the corpus has been updated.  You can also force update
@@ -21,21 +20,9 @@ updated.
 
 SMALL, MEDIUMSM, MEDIUM, MEDIUMLG, LARGE = 0,0,0,0,0
 
-failed_to_get_corpus_pickle = False
-if(not UPDATE_CORPUS):
-    try:
-        print("Retrieving corpus from pickle...")
-        with open('Dill/corpus.pickle', 'rb') as f:
-            trainingCorpus = pickle.load(f)
-        print("Corpus successfully retrieved from pickle")
-    except:
-        failed_to_get_corpus_pickle = True
-        print("Failed to get corpus pickle")
-if(UPDATE_CORPUS or failed_to_get_corpus_pickle):
+if(RETRAIN_CLASSIFIER):
     print("Generating Training Corpus...")
     trainingCorpus = Reader("./data/", r'training.*\.txt', cat_pattern=r'training(\w+).*\.txt')
-    with open('Dill/corpus.pickle', 'wb') as f:
-        pickle.dump(trainingCorpus, f)
     print("Training Corpus generated")
 
 def Category_features(word, text, wordIndex):
@@ -118,8 +105,6 @@ def Gen_labeled_texts():
     for f in trainingCorpus.fileids(categories='Bad'):
         whole_labeled_text.append((trainingCorpus.words(f), 'Bad'))
     random.shuffle(whole_labeled_text)
-    with open('Dill/whole_labeled_text.pickle', 'wb') as f:
-        pickle.dump(whole_labeled_text, f)
     print("labeled texts generated")
 
 featuresets = []
@@ -134,31 +119,9 @@ def Gen_feature_sets():
             features.update(wholeFeatures)
             featuresets.append((features, category))
     random.shuffle(featuresets)
-    with open('Dill/featuresets.pickle', 'wb') as f:
-        pickle.dump(featuresets, f)
     print("featuresets generated")
 
-if(not UPDATE_CORPUS and not failed_to_get_corpus_pickle):
-    try:
-        print("Retrieving labeled texts from pickle...")
-        with open('Dill/whole_labeled_text.pickle', 'rb') as f:
-            whole_labeled_text = pickle.load(f)
-        random.shuffle(whole_labeled_text)
-        print("Successfully retrieved labeled texts from pickle")
-        try:
-            print("Retrieving featuresets from pickle...")
-            with open('Dill/featuresets.pickle', 'rb') as f:
-                featuresets = pickle.load(f)
-            print("Successfully retrieved featuresets")
-        except:
-            print("Failed retrieval of featuresets from pickle")
-            Gen_feature_sets()
-            
-    except:
-        print("Failed retrieval of labeled texts from pickle")
-        Gen_labeled_texts()
-        Gen_feature_sets()
-else:
+if(RETRAIN_CLASSIFIER):
     Gen_labeled_texts()
     Gen_feature_sets()
 
@@ -168,11 +131,11 @@ if(TESTING):
     #From the pickle
     train_set = featuresets[len(featuresets)//2:]
     test_set = featuresets[:len(featuresets)//2]
-else:
+elif(RETRAIN_CLASSIFIER):
     train_set = featuresets
     test_set = []
 
-if(not (RETRAIN_CLASSIFIER or UPDATE_CORPUS or failed_to_get_corpus_pickle)):
+if(not RETRAIN_CLASSIFIER):
     try:
         print("Retrieving trained classifier from pickle...")
         with open('Dill/classifier.pickle', 'rb') as f:
@@ -180,17 +143,16 @@ if(not (RETRAIN_CLASSIFIER or UPDATE_CORPUS or failed_to_get_corpus_pickle)):
         print("Successfully retrieved classifier from pickle")
     except:
         print("Failed retrieval of classifier from pickle")
-        print("Training...")
-        classifier = nltk.NaiveBayesClassifier.train(train_set)
-        with open('Dill/classifier.pickle', 'wb') as f:
-            pickle.dump(classifier, f)
-        print("Trained")
+        print("Are you sure there is a classifier stored at Dill/classifier.pickle?")
+        quit()
 else:
     print("Training...")
     classifier = nltk.NaiveBayesClassifier.train(train_set)
+    print("Trained")
+    print("Dumping classifier to pickle...")
     with open('Dill/classifier.pickle', 'wb') as f:
         pickle.dump(classifier, f)
-    print("Trained")
+    print("Successfully dumped to pickle")
 
 if(TESTING):
     print("Testing...")
