@@ -1,0 +1,1 @@
+b'\nFatal error : Can not redeclare unregister_taxonomy ( ) ( previously declared in /home/ethanwalker.co.uk/public_html/wp-includes/taxonomy.php:506 ) in /home/ethanwalker.co.uk/public_html/wp-content/plugins/remove-tags-taxonomy/remove-tags-taxonomy.php on line 29\n ' 
