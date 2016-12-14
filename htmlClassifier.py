@@ -40,9 +40,9 @@ TESTING = False
 if(__name__ == "__main__"):
     argLen = len(sys.argv)
     if(argLen > 1):
-        if("RETRAIN" in argv):
+        if("RETRAIN" in sys.argv):
             RETRAIN_CLASSIFIER = True
-            if("TEST" in argv):
+            if("TEST" in sys.argv):
                 TESTING = True
 
 classifier = None
